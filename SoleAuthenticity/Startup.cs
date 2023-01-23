@@ -1,12 +1,22 @@
+using Entity.Models;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Repository.IRepository;
+using Repository.Repository;
+using Service.IService;
+using Service.Service;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
@@ -35,12 +45,55 @@ namespace SoleAuthenticity
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SoleAuthenticity", Version = "v1" });
             });
+            //For Db Context
+            services.AddDbContext<SoleAuthenticity_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //For DI Repository
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+
+            //For DI Service
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+
             //For Json Cycle
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //register cors
             services.AddCors(opt => opt.AddDefaultPolicy(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyMethod().AllowAnyHeader()));
             //For Automapper
             services.AddAutoMapper(typeof(Startup).Assembly);
+
+            //firebase auth
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromFile(@"E:\FPT University\EXE\SoleAuthenticity\SoleAuthenticity\Firebase\soleauthenticity-8f48f-firebase-adminsdk-zh8ss-595253ea9b.json")
+            }); ;
+            /*services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>
+            {
+                opt.Authority = Configuration["Jwt:Firebase:ValidIssuer"];
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Firebase:ValidIssuer"],
+                    ValidAudience = Configuration["Jwt:Firebase:ValidAudience"]
+                };
+            });*/
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            System.Text.Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
 
             //for appear summary
             services.AddSwaggerGen(c =>
