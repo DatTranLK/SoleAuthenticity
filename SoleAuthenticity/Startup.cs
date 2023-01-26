@@ -53,11 +53,13 @@ namespace SoleAuthenticity
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IBrandRepository, BrandRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             //For DI Service
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             //For Json Cycle
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
