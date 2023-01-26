@@ -18,6 +18,14 @@ namespace Repository.Repository
         {
             _dbContext = dbContext;
         }
+
+        public async Task<int> CountAll(Expression<Func<T, bool>> expression = null)
+        {
+            IQueryable<T> query = _dbContext.Set<T>();
+            if (expression != null) query = query.Where(expression);
+            return await query.CountAsync();
+        }
+
         public async Task Delete(T obj)
         {
             _dbContext.Set<T>().Remove(obj);
@@ -65,6 +73,19 @@ namespace Repository.Repository
             return lst;
         }
 
+        public async Task<IEnumerable<T>> GetAllWithPagination(Expression<Func<T, bool>> expression = null, List<Expression<Func<T, object>>> includes = null, Expression<Func<T, int>> orderBy = null, bool disableTracking = true, int? page = null, int? pageSize = null)
+        {
+            IQueryable<T> query = _dbContext.Set<T>();
+            if (disableTracking) query = query.AsNoTracking();
+            if (includes != null) query = includes.Aggregate(query, (current, include) => current.Include(include));
+            if (expression != null) query = query.Where(expression);
+            if (orderBy != null)
+                return await query.OrderByDescending(orderBy).Skip(((int)page - 1) * (int)pageSize)
+                        .Take((int)pageSize).ToListAsync();
+            return await query.Skip(((int)page - 1) * (int)pageSize)
+                        .Take((int)pageSize).ToListAsync();
+        }
+
         public async Task<IEnumerable<T>> GetByCondition(Expression<Func<T, bool>> expression)
         {
             var lst = await _dbContext.Set<T>().Where(expression).ToListAsync();
@@ -97,6 +118,11 @@ namespace Repository.Repository
         public async Task Insert(T obj)
         {
             _dbContext.Set<T>().Add(obj);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task Save()
+        {
             await _dbContext.SaveChangesAsync();
         }
 
