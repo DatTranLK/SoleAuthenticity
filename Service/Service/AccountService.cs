@@ -125,6 +125,10 @@ namespace Service.Service
         {
             try
             {
+                if (page <= 1)
+                {
+                    page = 1;
+                }
                 var lst = await _accountRepository.GetAllWithPagination(null, null, x => x.Id, true, page, pageSize);
                 var _mapper = config.CreateMapper();
                 var lstDto = _mapper.Map<IEnumerable<AccountDto>>(lst);
