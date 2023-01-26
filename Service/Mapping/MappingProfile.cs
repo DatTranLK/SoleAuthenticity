@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entity.Dtos.Account;
+using Entity.Dtos.Brand;
 using Entity.Models;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Service.Mapping
         public MappingProfile()
         {
             CreateMap<Account, AccountDto>().ReverseMap();
+            CreateMap<Brand, BrandDto>().ReverseMap();
         }
     }
 }
