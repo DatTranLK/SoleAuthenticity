@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Entity.Dtos.Category;
+using Entity.Dtos.New;
 using Entity.Models;
 using Repository.IRepository;
 using Service.IService;
@@ -12,26 +12,27 @@ using System.Threading.Tasks;
 
 namespace Service.Service
 {
-    public class CategoryService : ICategoryService
+    public class NewService : INewService
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly INewRepository _newRepository;
         MapperConfiguration config = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile(new MappingProfile());
         });
-        public CategoryService(ICategoryRepository categoryRepository)
+
+        public NewService(INewRepository newRepository)
         {
-            _categoryRepository = categoryRepository;
+            _newRepository = newRepository;
         }
-        public async Task<ServiceResponse<int>> CountCategories()
+        public async Task<ServiceResponse<int>> CountNews()
         {
             try
             {
-                var count = await _categoryRepository.CountAll(null);
+                var count = await _newRepository.CountAll(null);
                 if (count <= 0)
                 {
                     return new ServiceResponse<int>
-                    {
+                    { 
                         Data = 0,
                         Message = "Successfully",
                         Success = true,
@@ -53,20 +54,21 @@ namespace Service.Service
             }
         }
 
-        public async Task<ServiceResponse<int>> CreateNewCategory(Category category)
+        public async Task<ServiceResponse<int>> CreateNewNew(New newAdd)
         {
             try
             {
                 //Validation in here
-                //Starting insert to DB
-                category.IsActive = true;
-                await _categoryRepository.Insert(category);
+                //Starting insert to Db
+                newAdd.DateCreated = DateTime.Now;
+                newAdd.IsActive = true;
+                await _newRepository.Insert(newAdd);
                 return new ServiceResponse<int>
                 {
-                    Data = category.Id,
-                    Success = true,
+                    Data = newAdd.Id,
                     Message = "Successfully",
-                    StatusCode = 201
+                    StatusCode = 201,
+                    Success = true
                 };
             }
             catch (Exception ex)
@@ -76,12 +78,12 @@ namespace Service.Service
             }
         }
 
-        public async Task<ServiceResponse<string>> DisableOrEnableCategory(int id)
+        public async Task<ServiceResponse<string>> DisableOrEnableNew(int id)
         {
             try
             {
-                var cate = await _categoryRepository.GetById(id);
-                if (cate == null)
+                var newExist = await _newRepository.GetById(id);
+                if (newExist == null)
                 {
                     return new ServiceResponse<string>
                     {
@@ -90,15 +92,15 @@ namespace Service.Service
                         Success = true
                     };
                 }
-                if (cate.IsActive == true)
+                if (newExist.IsActive == true)
                 {
-                    cate.IsActive = false;
-                    await _categoryRepository.Save();
+                    newExist.IsActive = false;
+                    await _newRepository.Save();
                 }
-                else if (cate.IsActive == false)
+                else if (newExist.IsActive == false)
                 {
-                    cate.IsActive = true;
-                    await _categoryRepository.Save();
+                    newExist.IsActive = true;
+                    await _newRepository.Save();
                 }
                 return new ServiceResponse<string>
                 {
@@ -114,7 +116,38 @@ namespace Service.Service
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryDto>>> GetCategoriesWithPagination(int page, int pageSize)
+        public async Task<ServiceResponse<NewDto>> GetNewById(int id)
+        {
+            try
+            {
+                var newGet = await _newRepository.GetById(id);
+                var _mapper = config.CreateMapper();
+                var newDto = _mapper.Map<NewDto>(newGet);
+                if (newGet == null)
+                {
+                    return new ServiceResponse<NewDto>
+                    { 
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                return new ServiceResponse<NewDto>
+                {
+                    Data = newDto,
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<NewDto>>> GetNewsWithPagination(int page, int pageSize)
         {
             try
             {
@@ -122,19 +155,19 @@ namespace Service.Service
                 {
                     page = 1;
                 }
-                var lst = await _categoryRepository.GetAllWithPagination(null, null, x => x.Id, true, page, pageSize);
+                var lst = await _newRepository.GetAllWithPagination(null, null, x => x.Id, true, page, pageSize);
                 var _mapper = config.CreateMapper();
-                var lstDto = _mapper.Map<IEnumerable<CategoryDto>>(lst);
+                var lstDto = _mapper.Map<IEnumerable<NewDto>>(lst);
                 if (lst.Count() <= 0)
                 {
-                    return new ServiceResponse<IEnumerable<CategoryDto>>
+                    return new ServiceResponse<IEnumerable<NewDto>>
                     {
                         Message = "No rows",
                         Success = true,
                         StatusCode = 200
                     };
                 }
-                return new ServiceResponse<IEnumerable<CategoryDto>>
+                return new ServiceResponse<IEnumerable<NewDto>>
                 {
                     Data = lstDto,
                     Message = "Successfully",
@@ -149,62 +182,43 @@ namespace Service.Service
             }
         }
 
-        public async Task<ServiceResponse<CategoryDto>> GetCategoryById(int id)
+        public async Task<ServiceResponse<New>> UpdateNew(int id, New newUpdate)
         {
             try
             {
-                var cate = await _categoryRepository.GetById(id);
-                var _mapper = config.CreateMapper();
-                var cateDto = _mapper.Map<CategoryDto>(cate);
-                if (cate == null)
-                {
-                    return new ServiceResponse<CategoryDto>
-                    {
-                        Message = "No rows",
-                        Success = true,
-                        StatusCode = 200
-                    };
-                }
-                return new ServiceResponse<CategoryDto>
-                {
-                    Data = cateDto,
-                    Message = "Successfully",
-                    Success = true,
-                    StatusCode = 200
-                };
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<ServiceResponse<Category>> UpdateCategory(int id, Category category)
-        {
-            try
-            {
-                var checkExist = await _categoryRepository.GetById(id);
+                var checkExist = await _newRepository.GetById(id);
                 if (checkExist == null)
                 {
-                    return new ServiceResponse<Category>
+                    return new ServiceResponse<New>
                     {
                         Message = "No rows",
                         Success = true,
                         StatusCode = 200
                     };
                 }
-                if (!string.IsNullOrEmpty(category.Name))
+                if (!string.IsNullOrEmpty(newUpdate.Title))
                 { 
-                    checkExist.Name = category.Name;
+                    checkExist.Title = newUpdate.Title;
                 }
-                await _categoryRepository.Update(checkExist);
-                return new ServiceResponse<Category>
+                if (!string.IsNullOrEmpty(newUpdate.Avatar))
+                {
+                    checkExist.Avatar = newUpdate.Avatar;
+                }
+                if (!string.IsNullOrEmpty(newUpdate.Context))
+                {
+                    checkExist.Context = newUpdate.Context;
+                }
+                if (!string.IsNullOrEmpty(newUpdate.DateCreated.ToString()))
+                {
+                    checkExist.DateCreated = newUpdate.DateCreated;
+                }
+                await _newRepository.Update(checkExist);
+                return new ServiceResponse<New>
                 { 
                     Data = checkExist,
                     Message = "Successfully",
                     Success = true,
-                    StatusCode = 204
+                    StatusCode = 200
                 };
             }
             catch (Exception ex)
