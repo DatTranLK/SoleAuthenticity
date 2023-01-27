@@ -2,6 +2,7 @@
 using Entity.Dtos.Account;
 using Entity.Dtos.Brand;
 using Entity.Dtos.Category;
+using Entity.Dtos.New;
 using Entity.Dtos.Store;
 using Entity.Models;
 using System;
@@ -20,6 +21,7 @@ namespace Service.Mapping
             CreateMap<Brand, BrandDto>().ReverseMap();
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Store, StoreDto>().ReverseMap();
+            CreateMap<New, NewDto>().ReverseMap();
         }
     }
 }
