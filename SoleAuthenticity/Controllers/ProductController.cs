@@ -1,4 +1,4 @@
-﻿using Entity.Dtos.New;
+﻿using Entity.Dtos.Product;
 using Entity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,25 +11,25 @@ using System.Threading.Tasks;
 
 namespace SoleAuthenticity.Controllers
 {
-    [Route("api/news")]
+    [Route("api/products")]
     [ApiController]
-    public class NewController : ControllerBase
+    public class ProductController : ControllerBase
     {
-        private readonly INewService _newService;
+        private readonly IProductService _productService;
 
-        public NewController(INewService newService)
+        public ProductController(IProductService productService)
         {
-            _newService = newService;
+            _productService = productService;
         }
-        [HttpGet(Name = "GetNews")]
+        [HttpGet(Name = "GetProducts")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<NewDto>>>> GetNews([FromQuery] int page, [FromQuery] int pageSize)
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ProductDto>>>> GetProducts([FromQuery] int page, [FromQuery] int pageSize)
         {
             try
             {
-                var res = await _newService.GetNewsWithPagination(page, pageSize);
+                var res = await _productService.GetProductsWithPagination(page, pageSize);
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)
@@ -38,16 +38,15 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: "+ex.Message);
             }
         }
-
-        [HttpGet("count", Name = "CountNews")]
+        [HttpGet("count", Name = "CountProducts")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<ServiceResponse<int>>> CountNews()
+        public async Task<ActionResult<ServiceResponse<int>>> CountProducts()
         {
             try
             {
-                var res = await _newService.CountNews();
+                var res = await _productService.CountProducts();
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)
@@ -56,15 +55,15 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
-        [HttpGet("new/{id}", Name = "GetNewById")]
+        [HttpGet("product/{id}", Name = "GetProductById")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<ServiceResponse<NewDto>>> GetNewById(int id)
+        public async Task<ActionResult<ServiceResponse<ProductDto>>> GetProductById(int id)
         {
             try
             {
-                var res = await _newService.GetNewById(id);
+                var res = await _productService.GetProductById(id);
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)
@@ -73,15 +72,15 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
-        [HttpDelete("new", Name = "DisableOrEnableNew")]
+        [HttpDelete("product", Name = "DisableOrEnableProduct")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<ServiceResponse<string>>> DisableOrEnableNew(int id)
+        public async Task<ActionResult<ServiceResponse<string>>> DisableOrEnableProduct(int id)
         {
             try
             {
-                var res = await _newService.DisableOrEnableNew(id);
+                var res = await _productService.DisableOrEnableProduct(id);
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)
@@ -90,15 +89,15 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
-        [HttpPut("new", Name = "UpdateNew")]
+        [HttpPut("product", Name = "UpdateProduct")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<ServiceResponse<New>>> UpdateNew(int id, [FromBody]New newUpdate)
+        public async Task<ActionResult<ServiceResponse<Product>>> UpdateProduct(int id, [FromBody]Product product)
         {
             try
             {
-                var res = await _newService.UpdateNew(id, newUpdate);
+                var res = await _productService.UpdateProduct(id, product);
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)
@@ -107,16 +106,16 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
-        [HttpPost("new", Name = "CreateNewNew")]
+        [HttpPost("product", Name = "CreateNewProduct")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<ServiceResponse<NewDto>>> CreateNewNew([FromBody] New newUpdate)
+        public async Task<ActionResult<ServiceResponse<ProductDto>>> CreateNewProduct([FromBody] Product product)
         {
             try
             {
-                var res = await _newService.CreateNewNew(newUpdate);
-                return CreatedAtRoute("GetNewById", new { id = newUpdate.Id}, newUpdate);
+                var res = await _productService.CreateNewProduct(product);
+                return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)
             {
