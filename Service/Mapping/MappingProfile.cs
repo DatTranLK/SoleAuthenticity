@@ -4,6 +4,7 @@ using Entity.Dtos.Brand;
 using Entity.Dtos.Category;
 using Entity.Dtos.New;
 using Entity.Dtos.Product;
+using Entity.Dtos.ShoeCheck;
 using Entity.Dtos.Size;
 using Entity.Dtos.Store;
 using Entity.Models;
@@ -26,6 +27,9 @@ namespace Service.Mapping
             CreateMap<New, NewDto>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<Size, SizeDto>().ReverseMap();
+            CreateMap<ShoeCheck, ShoeCheckDtoForAdmin>().ReverseMap();
+            CreateMap<ShoeCheck, ShoeCheckDtoForCustomer>().ReverseMap();
+            CreateMap<ShoeCheck, ShoeCheckDtoForStaff>().ReverseMap();
         }
     }
 }

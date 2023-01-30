@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable disable
 
@@ -22,9 +23,11 @@ namespace Entity.Models
         public int? CustomerId { get; set; }
         public int? StaffId { get; set; }
         public bool? IsActive { get; set; }
-
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public virtual Account Customer { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public virtual Account Staff { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public virtual ICollection<ShoeCheckImage> ShoeCheckImages { get; set; }
     }
 }
