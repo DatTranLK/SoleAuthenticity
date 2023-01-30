@@ -208,5 +208,39 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+        [HttpPut("shoe-check/{id}", Name = "ChangeStatusToChecking")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<string>>> ChangeStatusToChecking(int id)
+        {
+            try
+            {
+                var res = await _shoeCheckService.ChangeStatusToChecking(id);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpPut("shoe-check/confirm/{id}", Name = "ConfirmCheckedShoe")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<string>>> ConfirmCheckedShoe(int id, [FromBody]ConfirmCheckedShoe confirmCheckedShoe)
+        {
+            try
+            {
+                var res = await _shoeCheckService.ConfirmCheckedShoe(id, confirmCheckedShoe);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
     }
 }

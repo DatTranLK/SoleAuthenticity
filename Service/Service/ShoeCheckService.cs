@@ -26,6 +26,100 @@ namespace Service.Service
         {
             _shoeCheckRepository = shoeCheckRepository;
         }
+
+        public async Task<ServiceResponse<string>> ChangeStatusToChecking(int id)
+        {
+            try
+            {
+                StatusChecking processing = StatusChecking.PROCESSING;
+                StatusChecking checking = StatusChecking.CHECKING;
+
+                var checkExist = await _shoeCheckRepository.GetById(id);
+                if (checkExist == null)
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                if (!checkExist.StatusChecking.Equals(processing.ToString()))
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "Can not change status!!!",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                else 
+                {
+                    checkExist.StatusChecking = checking.ToString();
+                    await _shoeCheckRepository.Save();
+                }
+                return new ServiceResponse<string>
+                {
+                    Message = "Sucessfully",
+                    Success = true,
+                    StatusCode = 204
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<string>> ConfirmCheckedShoe(int id, ConfirmCheckedShoe confirmCheckedShoe)
+        {
+            try
+            {
+                var checkExist = await _shoeCheckRepository.GetById(id);
+                if (checkExist == null)
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "Successfully",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                StatusChecking shoeHasChecked = StatusChecking.CHECKED;
+                StatusChecking checking = StatusChecking.CHECKING;
+                
+                if (!checkExist.StatusChecking.Equals(checking.ToString()))
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "Can not change the status!!!",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                else
+                {
+                    checkExist.DateCompletedChecking = DateTime.Now;
+                    checkExist.StatusChecking = shoeHasChecked.ToString();
+                    checkExist.IsAuthentic = confirmCheckedShoe.IsAuthentic;
+                    checkExist.StaffId = confirmCheckedShoe.StaffId;
+                    await _shoeCheckRepository.Update(checkExist);
+                }
+                return new ServiceResponse<string>
+                {
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 204
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<ServiceResponse<int>> CountForAdmin()
         {
             try
