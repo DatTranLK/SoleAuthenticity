@@ -61,6 +61,7 @@ namespace SoleAuthenticity
             services.AddScoped<IProductImageRepository, ProductImageRepository>();
             services.AddScoped<IShoeCheckRepository, ShoeCheckRepository>();
             services.AddScoped<IShoeCheckImageRepository, ShoeCheckImageRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
 
             //For DI Service
             services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -74,6 +75,7 @@ namespace SoleAuthenticity
             services.AddScoped<IProductImageService, ProductImageService>();
             services.AddScoped<IShoeCheckService, ShoeCheckService>();
             services.AddScoped<IShoeCheckImageService, ShoeCheckImageService>();
+            services.AddScoped<IReviewService, ReviewService>();
 
             //For Json Cycle
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
