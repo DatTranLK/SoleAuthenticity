@@ -4,6 +4,7 @@ using Entity.Dtos.Brand;
 using Entity.Dtos.Category;
 using Entity.Dtos.New;
 using Entity.Dtos.Product;
+using Entity.Dtos.Review;
 using Entity.Dtos.ShoeCheck;
 using Entity.Dtos.Size;
 using Entity.Dtos.Store;
@@ -30,6 +31,7 @@ namespace Service.Mapping
             CreateMap<ShoeCheck, ShoeCheckDtoForAdmin>().ReverseMap();
             CreateMap<ShoeCheck, ShoeCheckDtoForCustomer>().ReverseMap();
             CreateMap<ShoeCheck, ShoeCheckDtoForStaff>().ReverseMap();
+            CreateMap<Review, ReviewDto>().ForMember(dto => dto.AuthorName, act => act.MapFrom(obj => obj.Staff.Name)).ReverseMap();
         }
     }
 }
