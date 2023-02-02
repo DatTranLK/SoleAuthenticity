@@ -14,7 +14,7 @@ namespace Entity.Dtos.Review
         public int? StaffId { get; set; }
         public string Description { get; set; }
         public string Elements { get; set; }
-
+        public bool? IsActive { get; set; }
         public string AuthorName { get; set; }
     }
 }

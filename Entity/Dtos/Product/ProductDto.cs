@@ -16,5 +16,6 @@ namespace Entity.Dtos.Product
         public string Description { get; set; }
         public DateTime? DateCreated { get; set; }
         public int? AmountSold { get; set; }
+        public bool? IsActive { get; set; }
     }
 }
