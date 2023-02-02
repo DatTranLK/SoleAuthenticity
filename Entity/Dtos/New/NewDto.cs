@@ -13,5 +13,6 @@ namespace Entity.Dtos.New
         public DateTime? DateCreated { get; set; }
         public string Avatar { get; set; }
         public string Context { get; set; }
+        public bool? IsActive { get; set; }
     }
 }
