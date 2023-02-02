@@ -4,6 +4,7 @@ using Entity.Dtos.Brand;
 using Entity.Dtos.Category;
 using Entity.Dtos.New;
 using Entity.Dtos.Order;
+using Entity.Dtos.OrderDetail;
 using Entity.Dtos.Product;
 using Entity.Dtos.Review;
 using Entity.Dtos.ShoeCheck;
@@ -41,7 +42,12 @@ namespace Service.Mapping
                 .ForMember(dto => dto.CustomerName, act => act.MapFrom(obj => obj.Customer.Name))
                 .ForMember(dto => dto.StaffName, act => act.MapFrom(obj => obj.Staff.Name))
                 .ReverseMap();
-
+            CreateMap<OrderDetail, OrderDetailDto>()
+                .ForMember(dto => dto.Code, act => act.MapFrom(obj => obj.Product.Code))
+                .ForMember(dto => dto.ProductName, act => act.MapFrom(obj => obj.Product.Name))
+                .ForMember(dto => dto.Price, act => act.MapFrom(obj => obj.Product.Price))
+                .ForMember(dto => dto.TotalPrice, act => act.MapFrom(obj => obj.Order.TotalPrice))
+                .ReverseMap();
         }
     }
 }

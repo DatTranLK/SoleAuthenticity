@@ -25,5 +25,10 @@ namespace Service.IService
         Task<ServiceResponse<int>> CountOrdersForAdmin();
 
         Task<ServiceResponse<int>> CreateNewOrder(Order order);
+
+        //Change Status
+        Task<ServiceResponse<string>> ChangeStatusOfTheOrderToAccepted(int orderId, int staffId);
+        Task<ServiceResponse<string>> ChangeStatusOfTheOrderToDone(int orderId);
+        Task<ServiceResponse<string>> ChangeStatusOfTheOrderToCancle(int orderId, int staffId);
     }
 }

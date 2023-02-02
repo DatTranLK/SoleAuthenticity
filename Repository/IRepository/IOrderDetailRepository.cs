@@ -9,5 +9,6 @@ namespace Repository.IRepository
 {
     public interface IOrderDetailRepository : IGenericRepository<OrderDetail>
     {
+        Task<OrderDetail> GetOrderDetailByOrderId(int orderId);
     }
 }

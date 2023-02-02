@@ -21,10 +21,14 @@ namespace Service.Service
             cfg.AddProfile(new MappingProfile());
         }); 
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly IProductRepository _productRepository;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository, IProductRepository productRepository)
         {
             _orderRepository = orderRepository;
+            _orderDetailRepository = orderDetailRepository;
+            _productRepository = productRepository;
         }
         public async Task<ServiceResponse<int>> CountOrdersForAdmin()
         {
@@ -352,6 +356,160 @@ namespace Service.Service
                     Message = "Successfully",
                     Success = true,
                     StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<string>> ChangeStatusOfTheOrderToAccepted(int orderId, int staffId)
+        {
+            try
+            {
+                var checkOrderExist = await _orderRepository.GetById(orderId);
+                if (checkOrderExist == null)
+                {
+                    return new ServiceResponse<string>
+                    { 
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                OrderStatus processing = OrderStatus.PROCESSING;
+                OrderStatus accepted = OrderStatus.ACCEPTED;
+                if (!checkOrderExist.OrderStatus.Equals(processing.ToString()))
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "Can not change the status",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                checkOrderExist.OrderStatus = accepted.ToString();
+                checkOrderExist.StaffId = staffId;
+                await _orderRepository.Save();
+                var getOrderDetailByOrderId = await _orderDetailRepository.GetOrderDetailByOrderId(orderId);
+                if (getOrderDetailByOrderId == null)
+                {
+                    return new ServiceResponse<string>
+                    { 
+                        Message = "Not found order detail",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                var getProductFromBookId = await _productRepository.GetById(getOrderDetailByOrderId.ProductId);
+                if (getProductFromBookId == null)
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "Not found product",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                getProductFromBookId.AmountInStore -= getOrderDetailByOrderId.Quantity;
+                getProductFromBookId.AmountSold += getOrderDetailByOrderId.Quantity;
+                await _productRepository.Save();
+                return new ServiceResponse<string>
+                { 
+                    Message = "Successfully",
+                    StatusCode = 204,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<string>> ChangeStatusOfTheOrderToDone(int orderId)
+        {
+            try
+            {
+                var checkExist = await _orderRepository.GetById(orderId);
+                if (checkExist == null)
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                OrderStatus accepted = OrderStatus.ACCEPTED;
+                OrderStatus done = OrderStatus.DONE;
+                if (checkExist.OrderStatus.Equals(accepted.ToString()))
+                {
+                    checkExist.OrderStatus = done.ToString();
+                    await _orderRepository.Save();
+                }
+                else 
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "Can not change the status",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                return new ServiceResponse<string>
+                {
+                    Message = "Successfully",
+                    StatusCode = 204,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<string>> ChangeStatusOfTheOrderToCancle(int orderId, int staffId)
+        {
+            try
+            {
+                var checkExist = await _orderRepository.GetById(orderId);
+                if (checkExist == null)
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                OrderStatus processing = OrderStatus.PROCESSING;
+                OrderStatus cancel = OrderStatus.CANCEL;
+                if (checkExist.OrderStatus.Equals(processing.ToString()))
+                {
+                    checkExist.OrderStatus = cancel.ToString();
+                    checkExist.StaffId = staffId;
+                    await _orderRepository.Save();
+                }
+                else 
+                {
+                    return new ServiceResponse<string>
+                    {
+                        Message = "Can not change the status",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                return new ServiceResponse<string>
+                {
+                    Message = "Successfully",
+                    StatusCode = 204,
+                    Success = true
                 };
             }
             catch (Exception ex)

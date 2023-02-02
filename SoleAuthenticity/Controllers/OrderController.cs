@@ -191,5 +191,56 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+        [HttpPut("order/accepted/{orderId}", Name = "UpdateStatusToAccepted")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<string>>> UpdateStatusToAccepted(int orderId, [FromQuery]int staffId)
+        {
+            try
+            {
+                var res = await _orderService.ChangeStatusOfTheOrderToAccepted(orderId, staffId);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpPut("order/cancel/{orderId}", Name = "UpdateStatusToCancel")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<string>>> UpdateStatusToCancel(int orderId, [FromQuery] int staffId)
+        {
+            try
+            {
+                var res = await _orderService.ChangeStatusOfTheOrderToCancle(orderId, staffId);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpPut("order/done/{orderId}", Name = "UpdateStatusToDone")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<string>>> UpdateStatusToDone(int orderId)
+        {
+            try
+            {
+                var res = await _orderService.ChangeStatusOfTheOrderToDone(orderId);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
     }
 }
