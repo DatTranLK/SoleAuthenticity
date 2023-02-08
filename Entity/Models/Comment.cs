@@ -16,7 +16,6 @@ namespace Entity.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool? IsActive { get; set; }
-
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual Review Review { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

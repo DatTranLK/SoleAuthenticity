@@ -23,7 +23,6 @@ namespace Entity.Models
         public int? CustomerId { get; set; }
         public int? StaffId { get; set; }
         public bool? IsActive { get; set; }
-
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual Account Customer { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

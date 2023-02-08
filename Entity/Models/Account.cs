@@ -12,6 +12,7 @@ namespace Entity.Models
             Comments = new HashSet<Comment>();
             OrderCustomers = new HashSet<Order>();
             OrderStaffs = new HashSet<Order>();
+            RequestSellSecondHands = new HashSet<RequestSellSecondHand>();
             Reviews = new HashSet<Review>();
             ShoeCheckCustomers = new HashSet<ShoeCheck>();
             ShoeCheckStaffs = new HashSet<ShoeCheck>();
@@ -30,6 +31,7 @@ namespace Entity.Models
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Order> OrderCustomers { get; set; }
         public virtual ICollection<Order> OrderStaffs { get; set; }
+        public virtual ICollection<RequestSellSecondHand> RequestSellSecondHands { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<ShoeCheck> ShoeCheckCustomers { get; set; }
         public virtual ICollection<ShoeCheck> ShoeCheckStaffs { get; set; }
