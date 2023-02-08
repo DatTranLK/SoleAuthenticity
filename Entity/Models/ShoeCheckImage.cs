@@ -11,6 +11,7 @@ namespace Entity.Models
         public int Id { get; set; }
         public string ImgPath { get; set; }
         public int? ShoeCheckId { get; set; }
+
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual ShoeCheck ShoeCheck { get; set; }
     }

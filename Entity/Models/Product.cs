@@ -27,6 +27,8 @@ namespace Entity.Models
         public int? BrandId { get; set; }
         public int? CategoryId { get; set; }
         public int? StoreId { get; set; }
+        public bool? IsPreOrder { get; set; }
+
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual Brand Brand { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

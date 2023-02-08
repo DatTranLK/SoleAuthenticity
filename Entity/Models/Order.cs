@@ -21,6 +21,7 @@ namespace Entity.Models
         public string PaymentMethod { get; set; }
         public int? CustomerId { get; set; }
         public int? StaffId { get; set; }
+
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual Account Customer { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
