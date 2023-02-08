@@ -28,6 +28,8 @@ namespace Entity.Models
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductImage> ProductImages { get; set; }
+        public virtual DbSet<ProductSecondHandImage> ProductSecondHandImages { get; set; }
+        public virtual DbSet<RequestSellSecondHand> RequestSellSecondHands { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<ShoeCheck> ShoeChecks { get; set; }
@@ -196,6 +198,48 @@ namespace Entity.Models
                     .WithMany(p => p.ProductImages)
                     .HasForeignKey(d => d.ProductId)
                     .HasConstraintName("FK_ProductImages_Product");
+            });
+
+            modelBuilder.Entity<ProductSecondHandImage>(entity =>
+            {
+                entity.ToTable("ProductSecondHandImage");
+
+                entity.Property(e => e.ImgPath).HasColumnType("ntext");
+
+                entity.HasOne(d => d.RequestSellSecondHand)
+                    .WithMany(p => p.ProductSecondHandImages)
+                    .HasForeignKey(d => d.RequestSellSecondHandId)
+                    .HasConstraintName("FK_ProductSecondHandImage_RequestSellSecondHand");
+            });
+
+            modelBuilder.Entity<RequestSellSecondHand>(entity =>
+            {
+                entity.ToTable("RequestSellSecondHand");
+
+                entity.Property(e => e.BrandName).HasMaxLength(50);
+
+                entity.Property(e => e.Contact).HasMaxLength(100);
+
+                entity.Property(e => e.PriceBuy)
+                    .HasColumnType("money")
+                    .HasColumnName("Price_Buy");
+
+                entity.Property(e => e.PriceSell)
+                    .HasColumnType("money")
+                    .HasColumnName("Price_Sell");
+
+                entity.Property(e => e.ProductName).HasMaxLength(50);
+
+                entity.Property(e => e.Quality).HasMaxLength(20);
+
+                entity.Property(e => e.RequestStatus).HasMaxLength(50);
+
+                entity.Property(e => e.Warranty).HasMaxLength(50);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.RequestSellSecondHands)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_RequestSellSecondHand_Account");
             });
 
             modelBuilder.Entity<Review>(entity =>
