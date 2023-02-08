@@ -2,6 +2,7 @@
 using Entity.Dtos.Account;
 using Entity.Dtos.Brand;
 using Entity.Dtos.Category;
+using Entity.Dtos.Comment;
 using Entity.Dtos.New;
 using Entity.Dtos.Order;
 using Entity.Dtos.OrderDetail;
@@ -48,6 +49,7 @@ namespace Service.Mapping
                 .ForMember(dto => dto.Price, act => act.MapFrom(obj => obj.Product.Price))
                 .ForMember(dto => dto.TotalPrice, act => act.MapFrom(obj => obj.Order.TotalPrice))
                 .ReverseMap();
+            CreateMap<Comment, CommentDto>().ForMember(dto => dto.UserName, act => act.MapFrom(obj => obj.User.Name)).ReverseMap();
         }
     }
 }

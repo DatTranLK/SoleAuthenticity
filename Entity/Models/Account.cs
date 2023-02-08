@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 #nullable disable
 
@@ -10,6 +9,7 @@ namespace Entity.Models
     {
         public Account()
         {
+            Comments = new HashSet<Comment>();
             OrderCustomers = new HashSet<Order>();
             OrderStaffs = new HashSet<Order>();
             Reviews = new HashSet<Review>();
@@ -19,7 +19,6 @@ namespace Entity.Models
 
         public int Id { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
         public string Name { get; set; }
         public string Avatar { get; set; }
         public string Phone { get; set; }
@@ -28,6 +27,7 @@ namespace Entity.Models
         public int? RoleId { get; set; }
 
         public virtual Role Role { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Order> OrderCustomers { get; set; }
         public virtual ICollection<Order> OrderStaffs { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }

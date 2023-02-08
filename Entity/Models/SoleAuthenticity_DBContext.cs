@@ -22,6 +22,7 @@ namespace Entity.Models
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<New> News { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
@@ -58,8 +59,6 @@ namespace Entity.Models
 
                 entity.Property(e => e.Name).HasMaxLength(150);
 
-                entity.Property(e => e.Password).HasMaxLength(150);
-
                 entity.Property(e => e.Phone)
                     .HasMaxLength(10)
                     .IsUnicode(false)
@@ -85,6 +84,29 @@ namespace Entity.Models
                 entity.ToTable("Category");
 
                 entity.Property(e => e.Name).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.ToTable("Comment");
+
+                entity.Property(e => e.Body).HasColumnType("ntext");
+
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
+                entity.Property(e => e.ParentId).HasColumnName("Parent_Id");
+
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Review)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.ReviewId)
+                    .HasConstraintName("FK_Comment_Review");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Comment_Account");
             });
 
             modelBuilder.Entity<New>(entity =>
