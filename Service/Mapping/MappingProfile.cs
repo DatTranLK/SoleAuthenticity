@@ -7,6 +7,7 @@ using Entity.Dtos.New;
 using Entity.Dtos.Order;
 using Entity.Dtos.OrderDetail;
 using Entity.Dtos.Product;
+using Entity.Dtos.RequestSellSecondHand;
 using Entity.Dtos.Review;
 using Entity.Dtos.ShoeCheck;
 using Entity.Dtos.Size;
@@ -50,6 +51,10 @@ namespace Service.Mapping
                 .ForMember(dto => dto.TotalPrice, act => act.MapFrom(obj => obj.Order.TotalPrice))
                 .ReverseMap();
             CreateMap<Comment, CommentDto>().ForMember(dto => dto.UserName, act => act.MapFrom(obj => obj.User.Name)).ReverseMap();
+            CreateMap<RequestSellSecondHand, RequestSellSecondHandDto>().ReverseMap();
+            CreateMap<RequestSellSecondHand, RequestSellSecondHandDtoForAd>()
+                .ForMember(dto => dto.UserName, act => act.MapFrom(obj => obj.User.Name))
+                .ReverseMap();
         }
     }
 }

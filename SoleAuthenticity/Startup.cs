@@ -65,6 +65,8 @@ namespace SoleAuthenticity
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IProductSecondHandImageRepository, ProductSecondHandImageRepository>();
+            services.AddScoped<IRequestSellSecondHandRepository, RequestSellSecondHandRepository>();
 
             //For DI Service
             services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -82,6 +84,8 @@ namespace SoleAuthenticity
             services.AddScoped<IOrderDetailService, OrderDetailService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IProductSecondHandImageService, ProductSecondHandImageService>();
+            services.AddScoped<IRequestSellSecondHandService, RequestSellSecondHandService>();
 
             //For Json Cycle
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
