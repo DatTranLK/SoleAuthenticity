@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable disable
 
@@ -25,8 +26,9 @@ namespace Entity.Models
         public bool? IsRejected { get; set; }
         public bool? IsActive { get; set; }
         public int? UserId { get; set; }
-
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual Account User { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual ICollection<ProductSecondHandImage> ProductSecondHandImages { get; set; }
     }
 }
