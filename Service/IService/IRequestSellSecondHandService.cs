@@ -21,5 +21,11 @@ namespace Service.IService
 
         Task<ServiceResponse<int>> CreateNewRequestSellSecondHand(RequestSellSecondHand requestSellSecondHand);
         Task<ServiceResponse<RequestSellSecondHand>> UpdateRequestSellSecondHand(int id, RequestSellSecondHand requestSellSecondHand);
+
+        //Change status and process the logic
+        Task<ServiceResponse<string>> ChangeStatusToChecking(int requestId);
+        Task<ServiceResponse<string>> ChangeStatusToCancel(int requestId);
+        Task<ServiceResponse<int>> ChangeStatusToAccept(int requestId);
+
     }
 }

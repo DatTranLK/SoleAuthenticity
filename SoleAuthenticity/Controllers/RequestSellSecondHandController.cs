@@ -129,7 +129,7 @@ namespace SoleAuthenticity.Controllers
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<int>> CreateNewRequestSellSecondHand([FromBody]RequestSellSecondHand requestSellSecondHand)
+        public async Task<ActionResult<ServiceResponse<int>>> CreateNewRequestSellSecondHand([FromBody]RequestSellSecondHand requestSellSecondHand)
         {
             try
             {
@@ -146,11 +146,62 @@ namespace SoleAuthenticity.Controllers
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<RequestSellSecondHand>> UpdateRequestSellSecondHand(int id, [FromBody] RequestSellSecondHand requestSellSecondHand)
+        public async Task<ActionResult<ServiceResponse<RequestSellSecondHand>>> UpdateRequestSellSecondHand(int id, [FromBody] RequestSellSecondHand requestSellSecondHand)
         {
             try
             {
                 var res = await _requestSellSecondHandService.UpdateRequestSellSecondHand(id, requestSellSecondHand);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpPut("/api/request-sell-secondhands/request-sell-secondhand/request-status/checking", Name = "ChangeStatusToCheckingForRequest")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<string>>> ChangeStatusToCheckingForRequest(int id)
+        {
+            try
+            {
+                var res = await _requestSellSecondHandService.ChangeStatusToChecking(id);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpPut("/api/request-sell-secondhands/request-sell-secondhand/request-status/cancel", Name = "ChangeStatusToCancelForRequest")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<string>>> ChangeStatusToCancelForRequest(int id)
+        {
+            try
+            {
+                var res = await _requestSellSecondHandService.ChangeStatusToCancel(id);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpPut("/api/request-sell-secondhands/request-sell-secondhand/request-status/accept", Name = "ChangeStatusToAcceptForRequest")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<int>>> ChangeStatusToAcceptForRequest(int id)
+        {
+            try
+            {
+                var res = await _requestSellSecondHandService.ChangeStatusToAccept(id);
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)

@@ -17,15 +17,175 @@ namespace Service.Service
     public class RequestSellSecondHandService : IRequestSellSecondHandService
     {
         private readonly IRequestSellSecondHandRepository _requestSellSecondHandRepository;
+        private readonly IProductImageRepository _productImageRepository;
+        private readonly IProductSecondHandImageRepository _productSecondHandImageRepository;
+        private readonly IProductRepository _productRepository;
         MapperConfiguration config = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile(new MappingProfile());
         }); 
 
-        public RequestSellSecondHandService(IRequestSellSecondHandRepository requestSellSecondHandRepository)
+        public RequestSellSecondHandService(IRequestSellSecondHandRepository requestSellSecondHandRepository, IProductImageRepository productImageRepository, IProductSecondHandImageRepository productSecondHandImageRepository, IProductRepository productRepository)
         {
             _requestSellSecondHandRepository = requestSellSecondHandRepository;
+            _productImageRepository = productImageRepository;
+            _productSecondHandImageRepository = productSecondHandImageRepository;
+            _productRepository = productRepository;
         }
+
+        public async Task<ServiceResponse<int>> ChangeStatusToAccept(int requestId)
+        {
+            try
+            {
+                RequestStatus checking = RequestStatus.Checking;
+                RequestStatus accept = RequestStatus.Accept;
+                var checkExist = await _requestSellSecondHandRepository.GetById(requestId);
+                if (checkExist == null)
+                {
+                    return new ServiceResponse<int>
+                    {
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                if (!checkExist.RequestStatus.Equals(checking.ToString()))
+                {
+                    return new ServiceResponse<int>
+                    {
+                        Message = "Can not change status!!!",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                checkExist.RequestStatus = accept.ToString();
+                checkExist.IsRejected = false;
+                await _requestSellSecondHandRepository.Save();
+                
+                //create new product
+                Product pro = new Product
+                {
+                    Name = checkExist.ProductName + " (Second Hand)",
+                    AmountInStore = 1,
+                    Price = Convert.ToInt32(checkExist.PriceSell) + ((Convert.ToInt32(checkExist.PriceSell) * 5) / 100),
+                    Description = "Hàng: " + checkExist.Quality + " Thời hạn bảo hành: " + checkExist.Warranty,
+                    DateCreated = DateTime.Now,
+                    IsSecondHand = true,
+                    IsActive = true,
+                    BrandId = null,
+                    CategoryId = null,
+                    StoreId = null,
+                    IsPreOrder = null
+                };
+                await _productRepository.Insert(pro);
+                //process image
+                var lstImagesFromRequestId = await _productSecondHandImageRepository.GetAllWithCondition(x => x.RequestSellSecondHandId == checkExist.Id, null, null, true);
+                foreach (var item in lstImagesFromRequestId)
+                {
+                    ProductImage pic = new ProductImage();
+                    pic.ProductId = pro.Id;
+                    pic.ImgPath = item.ImgPath;
+                    await _productImageRepository.Insert(pic);
+                }
+                return new ServiceResponse<int>
+                { 
+                    Data = pro.Id,
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 204
+                };
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<string>> ChangeStatusToCancel(int requestId)
+        {
+            try
+            {
+                RequestStatus checking = RequestStatus.Checking;
+                RequestStatus cancel = RequestStatus.Cancle;
+                var checkExist = await _requestSellSecondHandRepository.GetById(requestId);
+                if (checkExist == null)
+                {
+                    return new ServiceResponse<string>
+                    { 
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                if (!checkExist.RequestStatus.Equals(checking.ToString()))
+                {
+                    return new ServiceResponse<string>
+                    { 
+                        Message = "Can not change status!!!",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                checkExist.IsRejected = true;
+                checkExist.RequestStatus = cancel.ToString();
+                await _requestSellSecondHandRepository.Save();
+                return new ServiceResponse<string>
+                { 
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 204
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<string>> ChangeStatusToChecking(int requestId)
+        {
+            try
+            {
+                RequestStatus checking = RequestStatus.Checking;
+                RequestStatus processing = RequestStatus.In_Progress;
+                var checkExist = await _requestSellSecondHandRepository.GetById(requestId);
+                if (checkExist == null)
+                {
+                    return new ServiceResponse<string>
+                    { 
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                if (!checkExist.RequestStatus.Equals(processing.ToString()))
+                {
+                    return new ServiceResponse<string>
+                    { 
+                        Message = "Can not change status!!!",
+                        Success = true,
+                        StatusCode = 400
+                    };
+                }
+                checkExist.RequestStatus = checking.ToString();
+                await _requestSellSecondHandRepository.Save();
+                return new ServiceResponse<string>
+                { 
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 204
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<ServiceResponse<int>> CountRequestSellSecondHandsForAd()
         {
             try
