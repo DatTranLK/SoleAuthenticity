@@ -11,6 +11,7 @@ namespace Entity.Models
         public RequestSellSecondHand()
         {
             ProductSecondHandImages = new HashSet<ProductSecondHandImage>();
+            Products = new HashSet<Product>();
         }
 
         public int Id { get; set; }
@@ -30,5 +31,7 @@ namespace Entity.Models
         public virtual Account User { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public virtual ICollection<ProductSecondHandImage> ProductSecondHandImages { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

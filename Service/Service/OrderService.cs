@@ -21,12 +21,14 @@ namespace Service.Service
             cfg.AddProfile(new MappingProfile());
         }); 
         private readonly IOrderRepository _orderRepository;
+        private readonly IRequestSellSecondHandRepository _requestSellSecondHandRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly IProductRepository _productRepository;
 
-        public OrderService(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository, IProductRepository productRepository)
+        public OrderService(IOrderRepository orderRepository, IRequestSellSecondHandRepository requestSellSecondHandRepository, IOrderDetailRepository orderDetailRepository, IProductRepository productRepository)
         {
             _orderRepository = orderRepository;
+            _requestSellSecondHandRepository = requestSellSecondHandRepository;
             _orderDetailRepository = orderDetailRepository;
             _productRepository = productRepository;
         }
@@ -403,8 +405,8 @@ namespace Service.Service
                         StatusCode = 200
                     };
                 }
-                var getProductFromBookId = await _productRepository.GetById(getOrderDetailByOrderId.ProductId);
-                if (getProductFromBookId == null)
+                var getProductFromId = await _productRepository.GetById(getOrderDetailByOrderId.ProductId);
+                if (getProductFromId == null)
                 {
                     return new ServiceResponse<string>
                     {
@@ -413,9 +415,35 @@ namespace Service.Service
                         StatusCode = 200
                     };
                 }
-                getProductFromBookId.AmountInStore -= getOrderDetailByOrderId.Quantity;
-                getProductFromBookId.AmountSold += getOrderDetailByOrderId.Quantity;
+                getProductFromId.AmountInStore -= getOrderDetailByOrderId.Quantity;
+                getProductFromId.AmountSold += getOrderDetailByOrderId.Quantity;
                 await _productRepository.Save();
+                if (getProductFromId.IsSecondHand == true)
+                {
+                    var requestSecondHand = await _requestSellSecondHandRepository.GetById(getProductFromId.RequestSecondHandId);
+                    if (requestSecondHand == null)
+                    {
+                        return new ServiceResponse<string>
+                        {
+                            Message = "No rows request sell secondhand",
+                            Success = true, 
+                            StatusCode = 200
+                        };
+                    };
+                    RequestStatus accept = RequestStatus.Accept;
+                    RequestStatus sold = RequestStatus.Sold;
+                    if (!requestSecondHand.RequestStatus.Equals(accept.ToString()))
+                    {
+                        return new ServiceResponse<string>
+                        { 
+                            Message = "Can not change the status!!!",
+                            Success = true,
+                            StatusCode = 400
+                        };
+                    }
+                    requestSecondHand.RequestStatus = sold.ToString();
+                    await _requestSellSecondHandRepository.Save();
+                }
                 return new ServiceResponse<string>
                 { 
                     Message = "Successfully",

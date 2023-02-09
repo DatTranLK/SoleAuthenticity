@@ -184,6 +184,11 @@ namespace Entity.Models
                     .HasForeignKey(d => d.CategoryId)
                     .HasConstraintName("FK_Product_Category");
 
+                entity.HasOne(d => d.RequestSecondHand)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.RequestSecondHandId)
+                    .HasConstraintName("FK_Product_RequestSellSecondHand");
+
                 entity.HasOne(d => d.Store)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.StoreId)
