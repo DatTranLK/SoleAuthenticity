@@ -11,6 +11,7 @@ namespace Entity.Enum
         In_Progress,
         Checking,
         Accept,
+        Cancle,
         Sold
     }
 }
