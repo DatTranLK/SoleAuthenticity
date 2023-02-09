@@ -75,7 +75,9 @@ namespace Service.Service
                     BrandId = null,
                     CategoryId = null,
                     StoreId = null,
-                    IsPreOrder = null
+                    IsPreOrder = null,
+                    RequestSecondHandId = checkExist.Id
+                    
                 };
                 await _productRepository.Insert(pro);
                 //process image
