@@ -90,7 +90,7 @@ namespace SoleAuthenticity
             //For Json Cycle
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //register cors
-            services.AddCors(opt => opt.AddDefaultPolicy(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyMethod().AllowAnyHeader()));
+/*            services.AddCors(opt => opt.AddDefaultPolicy(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyMethod().AllowAnyHeader())); */
             //For Automapper
             services.AddAutoMapper(typeof(Startup).Assembly);
 
@@ -163,6 +163,8 @@ namespace SoleAuthenticity
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseAuthorization();
 
