@@ -97,7 +97,7 @@ namespace SoleAuthenticity
             //firebase auth
             FirebaseApp.Create(new AppOptions
             {
-                Credential = GoogleCredential.FromFile(@"E:\FPT University\EXE\SoleAuthenticity\SoleAuthenticity\Firebase\soleauthenticity-8f48f-firebase-adminsdk-zh8ss-595253ea9b.json")
+                Credential = GoogleCredential.FromFile(@"..\SoleAuthenticity\Firebase\soleauthenticity-8f48f-firebase-adminsdk-zh8ss-595253ea9b.json")
             }); ;
             /*services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(opt =>
