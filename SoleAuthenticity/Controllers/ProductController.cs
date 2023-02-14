@@ -123,6 +123,23 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+        [HttpPost("preorder-product", Name = "CreateNewPreOrderProduct")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<ServiceResponse<ProductDto>>> CreateNewPreOrderProduct([FromBody] Product product)
+        {
+            try
+            {
+                var res = await _productService.CreateNewPreOrderProduct(product);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
         [HttpGet("secondhand-products", Name = "GetSecondHandProducts")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
