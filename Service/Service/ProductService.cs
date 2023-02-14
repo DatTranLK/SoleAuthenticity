@@ -7,6 +7,7 @@ using Service.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -119,7 +120,7 @@ namespace Service.Service
                 product.AmountInStore = 0;
                 product.DateCreated = DateTime.Now;
                 product.IsActive = true;
-                product.IsSecondHand = null;
+                product.IsSecondHand = false;
                 product.RequestSecondHandId = null;
                 product.IsPreOrder = true;
                 await _productRepository.Insert(product);
@@ -146,9 +147,9 @@ namespace Service.Service
                 product.AmountSold = 0;
                 product.DateCreated = DateTime.Now;
                 product.IsActive = true;
-                product.IsSecondHand = null;
+                product.IsSecondHand = false;
                 product.RequestSecondHandId = null;
-                product.IsPreOrder = null;
+                product.IsPreOrder = false;
                 await _productRepository.Insert(product);
                 return new ServiceResponse<int>
                 { 
@@ -290,6 +291,40 @@ namespace Service.Service
                     Message = "Successfully",
                     Success = true,
                     StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ProductShowDto>>> GetProductsInCus()
+        {
+            try
+            {
+                List<Expression<Func<Product, object>>> includes = new List<Expression<Func<Product, object>>> { 
+                    x => x.ProductImages
+                };
+                var lst = await _productRepository.GetAllWithCondition(x => x.IsActive == true && x.AmountInStore > 0 && x.IsPreOrder == false && x.IsSecondHand == false, includes, x => x.Id, true);
+                var _mapper = config.CreateMapper();
+                var lstDto = _mapper.Map<IEnumerable<ProductShowDto>>(lst);
+                if (lst.Count() <= 0)
+                {
+                    return new ServiceResponse<IEnumerable<ProductShowDto>>
+                    { 
+                        Message = "No rows",
+                        StatusCode = 200,
+                        Success = true
+                    };
+                }
+                return new ServiceResponse<IEnumerable<ProductShowDto>>
+                {
+                    Data = lstDto,
+                    Message = "Successfully",
+                    StatusCode = 200,
+                    Success = true
                 };
             }
             catch (Exception ex)

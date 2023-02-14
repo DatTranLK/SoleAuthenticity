@@ -55,6 +55,7 @@ namespace Service.Mapping
             CreateMap<RequestSellSecondHand, RequestSellSecondHandDtoForAd>()
                 .ForMember(dto => dto.UserName, act => act.MapFrom(obj => obj.User.Name))
                 .ReverseMap();
+            CreateMap<Product, ProductShowDto>().ForMember(dto => dto.ImgPath, act => act.MapFrom(obj => obj.ProductImages.FirstOrDefault().ImgPath));
         }
     }
 }

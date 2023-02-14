@@ -75,7 +75,7 @@ namespace Service.Service
                     BrandId = null,
                     CategoryId = null,
                     StoreId = null,
-                    IsPreOrder = null,
+                    IsPreOrder = false,
                     RequestSecondHandId = checkExist.Id
                     
                 };
