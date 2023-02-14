@@ -24,11 +24,68 @@ namespace Service.Service
         {
             _productRepository = productRepository;
         }
+
+        public async Task<ServiceResponse<int>> CountPreOrderProductsWithPagination()
+        {
+            try
+            {
+                var count = await _productRepository.CountAll(x => x.IsActive == true && x.IsPreOrder == true);
+                if (count <= 0)
+                {
+                    return new ServiceResponse<int>
+                    {
+                        Data = 0,
+                        Message = "Successfully",
+                        StatusCode = 200
+                    };
+                }
+                return new ServiceResponse<int>
+                {
+                    Data = count,
+                    Message = "Successfully",
+                    StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<ServiceResponse<int>> CountProducts()
         {
             try
             {
                 var count = await _productRepository.CountAll(null);
+                if (count <= 0)
+                {
+                    return new ServiceResponse<int>
+                    {
+                        Data = 0,
+                        Message = "Successfully",
+                        StatusCode = 200
+                    };
+                }
+                return new ServiceResponse<int>
+                {
+                    Data = count,
+                    Message = "Successfully",
+                    StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<int>> CountSecondHandProductsWithPagination()
+        {
+            try
+            {
+                var count = await _productRepository.CountAll(x => x.IsSecondHand == true && x.IsActive == true && x.AmountInStore > 0);
                 if (count <= 0)
                 {
                     return new ServiceResponse<int>
@@ -61,6 +118,9 @@ namespace Service.Service
                 product.AmountSold = 0;
                 product.DateCreated = DateTime.Now;
                 product.IsActive = true;
+                product.IsSecondHand = null;
+                product.RequestSecondHandId = null;
+                product.IsPreOrder = null;
                 await _productRepository.Insert(product);
                 return new ServiceResponse<int>
                 { 
@@ -114,6 +174,72 @@ namespace Service.Service
             }
         }
 
+        public async Task<ServiceResponse<IEnumerable<ProductDto>>> GetPreOrderProductsWithMobile()
+        {
+            try
+            {
+                var lst = await _productRepository.GetAllWithCondition(x => x.IsActive == true && x.IsPreOrder == true, null, null, true);
+                var _mapper = config.CreateMapper();
+                var lstDto = _mapper.Map<IEnumerable<ProductDto>>(lst);
+                if(lst.Count() <= 0)
+                {
+                    return new ServiceResponse<IEnumerable<ProductDto>>
+                    {
+                        Message = "No rows",
+                        StatusCode = 200,
+                        Success = true
+                    };
+                }
+                return new ServiceResponse<IEnumerable<ProductDto>>
+                {
+                    Data = lstDto,
+                    Message = "No rows",
+                    StatusCode = 200,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ProductDto>>> GetPreOrderProductsWithPagination(int page, int pageSize)
+        {
+            try
+            {
+                if (page <= 0)
+                {
+                    page = 1;
+                }
+                var lst = await _productRepository.GetAllWithPagination(x => x.IsActive == true && x.IsPreOrder == true, null, x => x.Id, true, page, pageSize);
+                var _mapper = config.CreateMapper();
+                var lstDto = _mapper.Map<IEnumerable<ProductDto>>(lst);
+                if (lst.Count() <= 0)
+                {
+                    return new ServiceResponse<IEnumerable<ProductDto>>
+                    {
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                return new ServiceResponse<IEnumerable<ProductDto>>
+                {
+                    Data = lstDto,
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<ServiceResponse<ProductDto>> GetProductById(int id)
         {
             try
@@ -154,6 +280,72 @@ namespace Service.Service
                     page = 1;
                 }
                 var lst = await _productRepository.GetAllWithPagination(null, null, x => x.Id, true, page, pageSize);
+                var _mapper = config.CreateMapper();
+                var lstDto = _mapper.Map<IEnumerable<ProductDto>>(lst);
+                if (lst.Count() <= 0)
+                {
+                    return new ServiceResponse<IEnumerable<ProductDto>>
+                    {
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                return new ServiceResponse<IEnumerable<ProductDto>>
+                {
+                    Data = lstDto,
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ProductDto>>> GetSecondHandProductsWithMobile()
+        {
+            try
+            {
+                var lst = await _productRepository.GetAllWithCondition(x => x.IsSecondHand == true && x.IsActive == true && x.AmountInStore > 0, null, x => x.Id, true);
+                var _mapper = config.CreateMapper();
+                var lstDto = _mapper.Map<IEnumerable<ProductDto>>(lst);
+                if (lst.Count() <= 0)
+                {
+                    return new ServiceResponse<IEnumerable<ProductDto>>
+                    {
+                        Message = "No rows",
+                        Success = true,
+                        StatusCode = 200
+                    };
+                }
+                return new ServiceResponse<IEnumerable<ProductDto>>
+                {
+                    Data = lstDto,
+                    Message = "Successfully",
+                    Success = true,
+                    StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ProductDto>>> GetSecondHandProductsWithPagination(int page, int pageSize)
+        {
+            try
+            {
+                if (page <= 0)
+                {
+                    page = 1;
+                }
+                var lst = await _productRepository.GetAllWithPagination(x => x.IsSecondHand == true && x.IsActive == true && x.AmountInStore > 0, null, x => x.Id, true, page, pageSize);
                 var _mapper = config.CreateMapper();
                 var lstDto = _mapper.Map<IEnumerable<ProductDto>>(lst);
                 if (lst.Count() <= 0)

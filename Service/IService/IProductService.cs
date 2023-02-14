@@ -16,5 +16,15 @@ namespace Service.IService
         Task<ServiceResponse<string>> DisableOrEnableProduct(int id);
         Task<ServiceResponse<int>> CreateNewProduct(Product product);
         Task<ServiceResponse<Product>> UpdateProduct(int id, Product product);
+
+        //second hand product
+        Task<ServiceResponse<IEnumerable<ProductDto>>> GetSecondHandProductsWithPagination(int page, int pageSize);
+        Task<ServiceResponse<int>> CountSecondHandProductsWithPagination();
+        Task<ServiceResponse<IEnumerable<ProductDto>>> GetSecondHandProductsWithMobile();
+
+        //preorder product
+        Task<ServiceResponse<IEnumerable<ProductDto>>> GetPreOrderProductsWithPagination(int page, int pageSize);
+        Task<ServiceResponse<int>> CountPreOrderProductsWithPagination();
+        Task<ServiceResponse<IEnumerable<ProductDto>>> GetPreOrderProductsWithMobile();
     }
 }
