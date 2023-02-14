@@ -26,5 +26,6 @@ namespace Service.IService
         Task<ServiceResponse<IEnumerable<ProductDto>>> GetPreOrderProductsWithPagination(int page, int pageSize);
         Task<ServiceResponse<int>> CountPreOrderProductsWithPagination();
         Task<ServiceResponse<IEnumerable<ProductDto>>> GetPreOrderProductsWithMobile();
+        Task<ServiceResponse<int>> CreateNewPreOrderProduct(Product product);
     }
 }

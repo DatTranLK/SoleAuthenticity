@@ -109,6 +109,34 @@ namespace Service.Service
             }
         }
 
+        public async Task<ServiceResponse<int>> CreateNewPreOrderProduct(Product product)
+        {
+            try
+            {
+                //Validation in here
+                //Starting insert to Db
+                product.AmountSold = 0;
+                product.AmountInStore = 0;
+                product.DateCreated = DateTime.Now;
+                product.IsActive = true;
+                product.IsSecondHand = null;
+                product.RequestSecondHandId = null;
+                product.IsPreOrder = true;
+                await _productRepository.Insert(product);
+                return new ServiceResponse<int>
+                {
+                    Data = product.Id,
+                    Message = "Successfully",
+                    StatusCode = 201
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<ServiceResponse<int>> CreateNewProduct(Product product)
         {
             try
