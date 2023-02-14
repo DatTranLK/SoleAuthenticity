@@ -32,5 +32,7 @@ namespace Service.IService
         Task<ServiceResponse<IEnumerable<ProductShowDto>>> GetProductsInCus();
         Task<ServiceResponse<IEnumerable<ProductShowDto>>> GetProductsInCusWithPagination(int page, int pageSize);
         Task<ServiceResponse<int>> CountProductsInCusWithPagination();
+        Task<ServiceResponse<IEnumerable<ProductShowDto>>> GetProductsByBestSellingProductsWithPagination(int page, int pageSize);
+        Task<ServiceResponse<int>> CountProductsByBestSellingProductsWithPagination();
     }
 }
