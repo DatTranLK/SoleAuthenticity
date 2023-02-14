@@ -82,6 +82,34 @@ namespace Service.Service
             }
         }
 
+        public async Task<ServiceResponse<int>> CountProductsInCusWithPagination()
+        {
+            try
+            {
+                var count = await _productRepository.CountAll(x => x.IsActive == true && x.AmountInStore > 0 && x.IsPreOrder == false && x.IsSecondHand == false);
+                if (count <= 0)
+                {
+                    return new ServiceResponse<int>
+                    {
+                        Data = 0,
+                        Message = "Successfully",
+                        StatusCode = 200
+                    };
+                }
+                return new ServiceResponse<int>
+                {
+                    Data = count,
+                    Message = "Successfully",
+                    StatusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<ServiceResponse<int>> CountSecondHandProductsWithPagination()
         {
             try
@@ -314,6 +342,44 @@ namespace Service.Service
                 {
                     return new ServiceResponse<IEnumerable<ProductShowDto>>
                     { 
+                        Message = "No rows",
+                        StatusCode = 200,
+                        Success = true
+                    };
+                }
+                return new ServiceResponse<IEnumerable<ProductShowDto>>
+                {
+                    Data = lstDto,
+                    Message = "Successfully",
+                    StatusCode = 200,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ProductShowDto>>> GetProductsInCusWithPagination(int page, int pageSize)
+        {
+            try
+            {
+                if (page <= 0)
+                {
+                    page = 1;
+                }
+                List<Expression<Func<Product, object>>> includes = new List<Expression<Func<Product, object>>> {
+                    x => x.ProductImages
+                };
+                var lst = await _productRepository.GetAllWithPagination(x => x.IsActive == true && x.AmountInStore > 0 && x.IsPreOrder == false && x.IsSecondHand == false, includes, x => x.Id, true, page, pageSize);
+                var _mapper = config.CreateMapper();
+                var lstDto = _mapper.Map<IEnumerable<ProductShowDto>>(lst);
+                if (lst.Count() <= 0)
+                {
+                    return new ServiceResponse<IEnumerable<ProductShowDto>>
+                    {
                         Message = "No rows",
                         StatusCode = 200,
                         Success = true
