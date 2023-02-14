@@ -123,5 +123,107 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+        [HttpGet("secondhand-products", Name = "GetSecondHandProducts")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ProductDto>>>> GetSecondHandProducts([FromQuery] int page, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var res = await _productService.GetSecondHandProductsWithPagination(page, pageSize);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("secondhand-products/count", Name = "CountSecondHandProducts")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<int>>> CountSecondHandProducts()
+        {
+            try
+            {
+                var res = await _productService.CountSecondHandProductsWithPagination();
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("mobile/secondhand-products", Name = "GetSecondHandProductsWithMobile")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ProductDto>>>> GetSecondHandProductsWithMobile()
+        {
+            try
+            {
+                var res = await _productService.GetSecondHandProductsWithMobile();
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("preorder-products", Name = "GetPreOrderProducts")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ProductDto>>>> GetPreOrderProducts([FromQuery] int page, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var res = await _productService.GetPreOrderProductsWithPagination(page, pageSize);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("preorder-products/count", Name = "CountPreProducts")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<int>>> CountPreProducts()
+        {
+            try
+            {
+                var res = await _productService.CountPreOrderProductsWithPagination();
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("mobile/preorder-products", Name = "GetPreOrderProductsWithMobile")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ProductDto>>>> GetPreOrderProductsWithMobile()
+        {
+            try
+            {
+                var res = await _productService.GetPreOrderProductsWithMobile();
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
     }
 }
