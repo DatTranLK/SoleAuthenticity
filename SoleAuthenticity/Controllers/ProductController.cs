@@ -259,5 +259,39 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+        [HttpGet("cus/ver-pagination", Name = "GetProductsInCusWithPagination")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ProductShowDto>>>> GetProductsInCusWithPagination([FromQuery]int page, [FromQuery]int pageSize)
+        {
+            try
+            {
+                var res = await _productService.GetProductsInCusWithPagination(page, pageSize);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("cus/ver-pagination/count", Name = "CountProductsInCusWithPagination")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<int>>> CountProductsInCusWithPagination()
+        {
+            try
+            {
+                var res = await _productService.CountProductsInCusWithPagination();
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
     }
 }
