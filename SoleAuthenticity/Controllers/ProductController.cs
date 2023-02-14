@@ -293,5 +293,39 @@ namespace SoleAuthenticity.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+        [HttpGet("cus/best-selling-products/ver-pagination", Name = "GetProductsByBestSellingProductsInCusWithPagination")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ProductShowDto>>>> GetProductsByBestSellingProductsInCusWithPagination([FromQuery] int page, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var res = await _productService.GetProductsByBestSellingProductsWithPagination(page, pageSize);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("cus/best-selling-products/ver-pagination/count", Name = "CountProductsByBestSellingProductsInCusWithPagination")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ServiceResponse<int>>> CountProductsByBestSellingProductsInCusWithPagination()
+        {
+            try
+            {
+                var res = await _productService.CountProductsByBestSellingProductsWithPagination();
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
     }
 }
