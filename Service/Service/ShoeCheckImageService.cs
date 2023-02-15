@@ -1,6 +1,9 @@
-﻿using Entity.Models;
+﻿using AutoMapper;
+using Entity.Dtos.ShoeCheckImage;
+using Entity.Models;
 using Repository.IRepository;
 using Service.IService;
+using Service.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +15,10 @@ namespace Service.Service
     public class ShoeCheckImageService : IShoeCheckImageService
     {
         private readonly IShoeCheckImageRepository _shoeCheckImageRepository;
-
+        MapperConfiguration config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(new MappingProfile());
+        });
         public ShoeCheckImageService(IShoeCheckImageRepository shoeCheckImageRepository)
         {
             _shoeCheckImageRepository = shoeCheckImageRepository;
@@ -47,12 +53,14 @@ namespace Service.Service
             }
         }
 
-        public async Task<ServiceResponse<int>> CreateNewShoeCheckImage(ShoeCheckImage shoeCheckImage)
+        public async Task<ServiceResponse<int>> CreateNewShoeCheckImage(ShoeCheckImageDto shoeCheckImageDto)
         {
             try
             {
                 //Validation in here
                 //Starting insert to Db
+                var _mapper = config.CreateMapper();
+                var shoeCheckImage = _mapper.Map<ShoeCheckImage>(shoeCheckImageDto);
                 await _shoeCheckImageRepository.Insert(shoeCheckImage);
                 return new ServiceResponse<int>
                 { 

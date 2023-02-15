@@ -1,4 +1,5 @@
-﻿using Entity.Models;
+﻿using Entity.Dtos.ShoeCheckImage;
+using Entity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -58,11 +59,11 @@ namespace SoleAuthenticity.Controllers
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<ServiceResponse<int>>> CreateNewShoeCheckImage([FromBody]ShoeCheckImage shoeCheckImage)
+        public async Task<ActionResult<ServiceResponse<int>>> CreateNewShoeCheckImage([FromBody]ShoeCheckImageDto shoeCheckImageDto)
         {
             try
             {
-                var res = await _shoeCheckImageService.CreateNewShoeCheckImage(shoeCheckImage);
+                var res = await _shoeCheckImageService.CreateNewShoeCheckImage(shoeCheckImageDto);
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)

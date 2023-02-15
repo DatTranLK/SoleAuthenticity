@@ -10,6 +10,7 @@ using Entity.Dtos.Product;
 using Entity.Dtos.RequestSellSecondHand;
 using Entity.Dtos.Review;
 using Entity.Dtos.ShoeCheck;
+using Entity.Dtos.ShoeCheckImage;
 using Entity.Dtos.Size;
 using Entity.Dtos.Store;
 using Entity.Models;
@@ -56,6 +57,8 @@ namespace Service.Mapping
                 .ForMember(dto => dto.UserName, act => act.MapFrom(obj => obj.User.Name))
                 .ReverseMap();
             CreateMap<Product, ProductShowDto>().ForMember(dto => dto.ImgPath, act => act.MapFrom(obj => obj.ProductImages.FirstOrDefault().ImgPath));
+            CreateMap<ShoeCheck, CreateShoeCheckDto>().ReverseMap();
+            CreateMap<ShoeCheckImage, ShoeCheckImageDto>().ReverseMap();
         }
     }
 }

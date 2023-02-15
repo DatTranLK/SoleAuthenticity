@@ -195,11 +195,11 @@ namespace SoleAuthenticity.Controllers
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<ServiceResponse<int>>> CreateNewShoeCheck([FromBody]ShoeCheck shoeCheck)
+        public async Task<ActionResult<ServiceResponse<int>>> CreateNewShoeCheck([FromBody] CreateShoeCheckDto createShoeCheckDto)
         {
             try
             {
-                var res = await _shoeCheckService.CreateNewShoeCheck(shoeCheck);
+                var res = await _shoeCheckService.CreateNewShoeCheck(createShoeCheckDto);
                 return StatusCode((int)res.StatusCode, res);
             }
             catch (Exception ex)
