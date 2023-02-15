@@ -24,7 +24,7 @@ namespace Service.IService
         Task<ServiceResponse<ShoeCheckDtoForStaff>> GetShoeCheckByIdForStaff(int id);
 
         Task<ServiceResponse<string>> DisableOrEnableShoeCheck(int id);
-        Task<ServiceResponse<int>> CreateNewShoeCheck(ShoeCheck shoeCheck);
+        Task<ServiceResponse<int>> CreateNewShoeCheck(CreateShoeCheckDto createShoeCheckDto);
         Task<ServiceResponse<string>> ChangeStatusToChecking(int id);
         Task<ServiceResponse<string>> ConfirmCheckedShoe(int id, ConfirmCheckedShoe confirmCheckedShoe);
     }

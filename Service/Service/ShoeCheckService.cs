@@ -210,12 +210,14 @@ namespace Service.Service
             }
         }
 
-        public async Task<ServiceResponse<int>> CreateNewShoeCheck(ShoeCheck shoeCheck)
+        public async Task<ServiceResponse<int>> CreateNewShoeCheck(CreateShoeCheckDto createShoeCheckDto)
         {
             try
             {
                 //Validation in here
                 //Starting insert to Db
+                var _mapper = config.CreateMapper();
+                var shoeCheck = _mapper.Map<ShoeCheck>(createShoeCheckDto);
                 shoeCheck.DateSubmitted = DateTime.Now;
                 shoeCheck.DateCompletedChecking = null;
                 StatusChecking statusProcessing = StatusChecking.PROCESSING;
